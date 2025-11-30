@@ -3,7 +3,7 @@ import Order from "../models/order.model.js";
 import Transaction from "../../transctions/models/transaction.models.js";
 import Cart from "../../carts/models/carts.model.js";
 import Product from "../../products/models/products.model.js";
-import paystack from "../../../services/paystack.service.js";
+import paystack from "../../paystackIntegrations/services/paystack.service.js";
 
 const KOBOS = (ngn) => Math.round(ngn * 100);
 
