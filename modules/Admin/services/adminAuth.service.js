@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import Admin from "./admin.model.js";
-import { ApiError } from "../../utils/ApiError.js";
+import Admin from "../models/admin.model.js";
+import { ApiError } from "../../../utils/ApiError.js";
 
 export const createAdmin = async (payload) => {
   const { firstName, lastName, email, password } = payload;

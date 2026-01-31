@@ -1,4 +1,5 @@
-import { Order } from '../../orders/models/order.model';
+import Order from '../../orders/models/order.model.js';
+import { ApiError } from '../../../utils/ApiError.js';
 export const getAllOrders = async () => {
   try {
     const orders = await Order.find()
@@ -16,7 +17,7 @@ export const getOrderById = async (orderId) => {
     const order = await Order.findById(orderId)
       .populate("orderItems.product", "name price bottleSize");
 
-    if (!order) throw new Error("Order not found");
+    if (!order) throw new ApiError(404, "Order not found");
 
     return order;
   } catch (err) {
@@ -27,7 +28,7 @@ export const getOrderById = async (orderId) => {
 export const updateOrderStatus = async (orderId, status) => {
   try {
     const order = await Order.findById(orderId);
-    if (!order) throw new Error("Order not found");
+    if (!order) throw new ApiError(404, "Order not found");
 
     if (status) order.status = status;
 
@@ -42,7 +43,7 @@ export const updateOrderStatus = async (orderId, status) => {
 export const deleteOrder = async (orderId) => {
   try {
     const order = await Order.findById(orderId);
-    if (!order) throw new Error("Order not found");
+    if (!order) throw new ApiError(404, "Order not found");
 
     order.archived = true;
     await order.save();
@@ -52,3 +53,29 @@ export const deleteOrder = async (orderId) => {
     throw err;
   }
 };
+
+export const getAdminDashboardStatsService = async () => {
+  const totalOrders = await Order.countDocuments();
+
+  const totalTransactions = await Transaction.countDocuments({
+    status: "success",
+  });
+
+  const revenueAgg = await Transaction.aggregate([
+    { $match: { status: "success" } },
+    { $group: { _id: null, totalRevenue: { $sum: "$amount" } } },
+  ]);
+
+  const profitAgg = await Order.aggregate([
+    { $match: { paymentStatus: "successful" } },
+    { $group: { _id: null, totalProfit: { $sum: "$profit" } } },
+  ]);
+
+  return {
+    totalOrders,
+    totalTransactions,
+    totalRevenue: revenueAgg[0]?.totalRevenue || 0,
+    totalProfit: profitAgg[0]?.totalProfit || 0,
+  };
+};
+

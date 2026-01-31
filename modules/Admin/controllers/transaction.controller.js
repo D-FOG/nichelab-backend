@@ -1,5 +1,5 @@
-import { getAllTransactions, getTransactionById, getTransactionsByStatus, updateTransactionStatus } from "../services/transaction.service";
-import { ApiResponse } from "../../../utils/apiResponse";
+import { getAllTransactions, getTransactionById, getTransactionsByStatus, updateTransactionStatus } from "../services/transaction.service.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 export const getAllTransactionsController = async (req, res, next) => {
   try {

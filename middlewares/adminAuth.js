@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import Admin from "../modules/admin/admin.model.js";
+import Admin from "../modules/Admin/models/admin.model.js";
 import { ApiError } from "../utils/ApiError.js";
 
 export const adminAuth = async (req, res, next) => {

@@ -1,8 +1,8 @@
-import { createCategory, updateCategory, deleteCategory, getAllCategories, getCategoryById } from "../services/category.service";
-import { ApiResponse } from "../../../utils/apiResponse";
+import { createCategory, updateCategory, deleteCategory, getAllCategories, getCategoryById } from "../services/category.service.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 export const createCategoryController = async (req, res, next) => {
-  try {
+  try {s
     const { name, description } = req.body;
     const category = await createCategory(name, description);
     return new ApiResponse(201, "Category created successfully", category);

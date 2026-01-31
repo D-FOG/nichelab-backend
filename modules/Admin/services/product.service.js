@@ -1,7 +1,7 @@
-import Product from "../../products/models/products.model";
-import Category from "../category/category.model.js";
-import { uploadImage } from "../../../utils/cloudinary";
-import { ApiError } from "../../utils/ApiError.js";
+import Product from "../../products/models/products.model.js";
+import Category from "../../products/models/category.model.js";
+import { uploadImage } from "../../../utils/cloudinary.js";
+import { ApiError } from "../../../utils/ApiError.js";
 //import { ApiResponse } from "../../utils/ApiResponse.js";
 
 export const createProduct = async (name, description, price, bottleSize, categoryId, stock, tags) => {
@@ -25,7 +25,7 @@ export const createProduct = async (name, description, price, bottleSize, catego
       description,
       price,
       bottleSize,
-      category,
+      category: categoryId,
       stock,
       tags,
       images,

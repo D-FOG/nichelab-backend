@@ -1,5 +1,5 @@
 import Category from "../../products/models/category.model.js";
-import { ApiError } from "../../utils/ApiError.js";
+import { ApiError } from "../../../utils/ApiError.js";
 //import { ApiResponse } from "../../utils/ApiResponse.js";
 
 export const createCategory = async (name, description) => {

@@ -1,4 +1,4 @@
-import { createAdmin, loginAdmin } from "./admin.service.js";
+import { createAdmin, loginAdmin } from "../services/adminAuth.service.js";
 import {
   createAdminBySuperAdmin,
   getAllAdmins,
@@ -7,10 +7,10 @@ import {
   updateAdmin,
   disableAdmin,
   updateAdminPassword
-} from "./admin.service.js";
+} from "../services/admin.service.js";
 //import { ApiResponse } from "../../utils/ApiResponse.js";
 
-import { ApiResponse } from "../../utils/ApiResponse.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 export const signupAdmin = async (req, res, next) => {
   try {
@@ -42,7 +42,7 @@ export const getMyProfile = async (req, res) => {
   );
 };
 
-export const createAdmin = async (req, res, next) => {
+export const createAdminController = async (req, res, next) => {
   try {
     const admin = await createAdminBySuperAdmin(req.body);
 

@@ -1,5 +1,5 @@
-import { getAllOrders, getOrderById, updateOrderStatus, deleteOrder } from "../services/orders.service";
-import { ApiResponse } from "../../../utils/apiResponse";
+import { getAllOrders, getOrderById, updateOrderStatus, deleteOrder, getAdminDashboardStatsService } from "../services/orders.service.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 export const getAllOrdersController = async (req, res, next) => {
   try {
@@ -38,4 +38,13 @@ export const deleteOrderController = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
+};
+
+export const getAdminDashboardStatsController = async (req, res, next) => {
+  try {
+    const stats = await getAdminDashboardStatsService();
+    return res.status(200).json(new ApiResponse(200, "Admin dashboard stats fetched successfully", stats));
+  } catch (err) {
+    next(err);
+  }
 };

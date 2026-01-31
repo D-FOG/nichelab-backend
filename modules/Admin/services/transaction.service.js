@@ -1,4 +1,5 @@
-import { Transaction }  from "../../transctions/models/transaction.models";
+import Transaction from "../../transctions/models/transaction.models.js";
+import { ApiError } from "../../../utils/ApiError.js";
 
 export const getAllTransactions = async () => {
   try {
@@ -16,7 +17,7 @@ export const getTransactionById = async (transactionId) => {
     const transaction = await Transaction.findById(transactionId)
       .populate("order", "orderId totalAmount customerName");
 
-    if (!transaction) throw new Error("Transaction not found");
+    if (!transaction) throw new ApiError(404, "Transaction not found");
 
     return transaction;
   } catch (err) {
@@ -39,7 +40,7 @@ export const getTransactionsByStatus = async (status) => {
 export const updateTransactionStatus = async (transactionId, status) => {
   try {
     const transaction = await Transaction.findById(transactionId);
-    if (!transaction) throw new Error("Transaction not found");
+    if (!transaction) throw new ApiError(404, "Transaction not found");
 
     transaction.status = status;
     await transaction.save();

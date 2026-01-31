@@ -9,7 +9,7 @@ import {
   getProduct,
   searchProducts,
 } from "../controllers/product.controller.js";
-import adminAuth from "../../../middlewares/auth.js";
+import { adminAuth } from "../../../middlewares/adminAuth.js";
 import multer from "multer";
 
 const router = express.Router();

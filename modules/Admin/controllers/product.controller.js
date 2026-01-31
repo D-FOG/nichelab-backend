@@ -1,5 +1,5 @@
-import { createProduct, updateProduct, deleteProduct, getAllProducts, getProductById, getProductsByCategory} from "../services/product.service";
-import { ApiResponse } from "../../../utils/apiResponse";
+import { createProduct, updateProduct, deleteProduct, getAllProducts, getProductById, getProductsByCategory} from "../services/product.service.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 export const createProductController = async (req, res, next) => {
     try {

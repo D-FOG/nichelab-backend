@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
-import Admin from "./admin.model.js";
-import { ApiError } from "../../utils/ApiError.js";
+import Admin from "../models/admin.model.js";
+import { ApiError } from "../../../utils/ApiError.js";
 
 /**
  * Super Admin creates a new admin
