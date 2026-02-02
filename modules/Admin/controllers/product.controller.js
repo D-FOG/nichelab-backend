@@ -15,7 +15,7 @@ export const updateProductController = async (req, res, next) => {
     try {
         const { productId } = req.params;
         const updateData = req.body;
-        const product = await updateProduct(productId, updateData, req.file);
+        const product = await updateProduct(productId, updateData, req.files);
         return res.status(200).json(new ApiResponse(200, "Product updated successfully", product));
     }
     catch (err) {

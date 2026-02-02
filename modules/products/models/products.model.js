@@ -19,6 +19,11 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
 
+    discount: {
+      isDiscounted: { type: Boolean, default: false },
+      percentage: { type: Number, min: 0, max: 100, default: 0 },
+    },
+
     bottleSize: {
       type: String,
       enum: ["30ml", "50ml", "75ml", "100ml"],
@@ -43,10 +48,12 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
 
-    images: {
-      type: [String],
-      default: [],
-    },
+    images: [
+      {
+        publicId: { type: String, required: true },
+        url: { type: String, required: true },
+      }
+    ],
 
     isActive: {
       type: Boolean,

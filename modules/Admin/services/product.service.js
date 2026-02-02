@@ -1,10 +1,10 @@
 import Product from "../../products/models/products.model.js";
 import Category from "../../products/models/category.model.js";
-import { uploadImage } from "../../../utils/cloudinary.js";
+import { uploadImage, deleteCloudinaryImage } from "../../../utils/cloudinary.js";
 import { ApiError } from "../../../utils/ApiError.js";
 //import { ApiResponse } from "../../utils/ApiResponse.js";
 
-export const createProduct = async (name, description, price, bottleSize, categoryId, stock, tags) => {
+export const createProduct = async (name, description, price, bottleSize, categoryId, stock, tags, files) => {
   try {
     const cat = await Category.findById(categoryId);
     if (!cat) {
@@ -13,10 +13,10 @@ export const createProduct = async (name, description, price, bottleSize, catego
 
     let images = [];
 
-    if (req.files?.length) {
-      for (const file of req.files) {
-        const url = await uploadImage(file.path);
-        images.push(url);
+    if (files?.length) {
+      for (const file of files) {
+        const uploaded = await uploadImage(file.path);
+        images.push(uploaded);
       }
     }
 
@@ -37,7 +37,7 @@ export const createProduct = async (name, description, price, bottleSize, catego
   }
 };
 
-export const updateProduct = async (productId, updateData, imageFile) => {
+export const updateProduct = async (productId, updateData, files) => {
   try {
     const product = await Product.findById(productId);
     if (!product) {
@@ -49,12 +49,20 @@ export const updateProduct = async (productId, updateData, imageFile) => {
       "description",
       "price",
       "bottleSize",
-      "category",
       "stock",
       "tags",
       "isActive",
       "archived",
     ];
+
+    // category update
+    if (updateData.category) {
+      const categoryExists = await Category.findById(updateData.category);
+      if (!categoryExists) {
+        throw new ApiError(404, "Category not found");
+      }
+      product.category = updateData.category;
+    }
 
     fields.forEach((field) => {
       if (updateData[field] !== undefined) {
@@ -62,15 +70,35 @@ export const updateProduct = async (productId, updateData, imageFile) => {
       }
     });
 
-    // upload new images if any
-    if (imageFile?.length) {
-      const uploaded = [];
-      for (const file of imageFile) {
-        const url = await uploadImage(file.path);
-        uploaded.push(url);
+
+    // discount logic
+    if (updateData.isDiscounted !== undefined) {
+      product.discount.isDiscounted = updateData.isDiscounted;
+
+      if (updateData.isDiscounted) {
+        product.discount.percentage = Number(updateData.discountPercentage || 0);
+      } else {
+        product.discount.percentage = 0;
       }
-      product.images.push(...uploaded);
     }
+
+    // upload new images (append)
+    if (files?.length) {
+      for (const file of files) {
+        const uploaded = await uploadImage(file.path);
+        product.images.push(uploaded);
+      }
+    }
+
+    // // upload new images if any
+    // if (imageFile?.length) {
+    //   const uploaded = [];
+    //   for (const file of imageFile) {
+    //     const url = await uploadImage(file.path);
+    //     uploaded.push(url);
+    //   }
+    //   product.images.push(...uploaded);
+    // }
 
     await product.save();
 
@@ -88,8 +116,14 @@ export const deleteProduct = async (productId) => {
       throw new ApiError(404, "Product not found");
     }
 
+    //delete image fro, cloudinary
+    for (const img of product.images) {
+      await deleteCloudinaryImage(img.publicId);
+    }
+
     product.archived = true;
     product.isActive = false;
+    product.images = [];
 
     await product.save();
 
