@@ -23,6 +23,7 @@ import { getSpec } from "./config/swagger.js";
 import adminSpec from "./modules/Admin/swagger.js";
 import productSpec from "./modules/products/swagger.js";
 import { cartSpec, couponGiftWrapSpec } from "./modules/carts/swagger.js";
+import ordersSpec from "./modules/orders/swagger.js";
 
 const app = express();
 
@@ -41,7 +42,7 @@ app.post(
   (req, res, next) => {
     // delegate to controller
     // require the controller here to avoid circular issues
-    import("./src/modules/payments/paystack.controller.js").then(mod => {
+    import("./modules/paystackIntegrations/controllers/paystack.controller.js").then(mod => {
       return mod.paystackWebhook(req, res, next);
     }).catch(next);
   }
@@ -49,7 +50,7 @@ app.post(
 
 // Mount Admin docs before admin routes so auth middleware doesn't block them
 try {
-  const spec = getSpec(adminSpec, productSpec, cartSpec, couponGiftWrapSpec);
+  const spec = getSpec(adminSpec, productSpec, cartSpec, couponGiftWrapSpec, ordersSpec);
   app.use("/api/admin/docs", swaggerUi.serve, swaggerUi.setup(spec));
 } catch (err) {
   console.error("Failed to setup Admin docs:", err);

@@ -64,7 +64,7 @@ export const paystackWebhook = async (req, res, next) => {
 
     if (status === "success") {
       // If already marked paid, respond ok
-      if (order.payment.status === "success") {
+      if ((order.payment && order.payment.status === "success") || order.paymentStatus === "successful") {
         return res.status(200).send("ok");
       }
 
@@ -73,31 +73,35 @@ export const paystackWebhook = async (req, res, next) => {
       let usedSession = false;
 
       try {
-        // Start transaction if backed by replica set
         if (session.inTransaction === false) {
           session.startTransaction();
           usedSession = true;
         }
 
         // Decrement stock for each item, ensure enough stock exists
-        for (const it of order.items) {
+        // New order schema uses `orderItems` with `product` and `quantity`
+        for (const it of order.orderItems) {
+          const productId = it.product;
+          const qty = it.quantity || it.qty || 1;
           const resUpdate = await Product.updateOne(
-            { _id: it.productId, stock: { $gte: it.qty } },
-            { $inc: { stock: -it.qty } },
+            { _id: productId, stock: { $gte: qty } },
+            { $inc: { stock: -qty } },
             { session }
           );
 
           if (resUpdate.modifiedCount === 0) {
-            // Insufficient stock — abort transaction
-            throw new Error(`Insufficient stock for product ${it.productId}`);
+            throw new Error(`Insufficient stock for product ${productId}`);
           }
         }
 
         // Update order payment fields
+        order.payment = order.payment || {};
         order.payment.status = "success";
         order.payment.paidAt = new Date();
         order.payment.gatewayResponse = verifyResp.data;
-        order.status = "paid";
+        order.payment.reference = reference;
+        order.paymentStatus = "successful";
+        order.status = "processing";
         await order.save({ session });
 
         // update txn orderId if needed
@@ -112,7 +116,9 @@ export const paystackWebhook = async (req, res, next) => {
         txn.status = "failed";
         txn.rawResponse = { ...txn.rawResponse, error: err.message };
         await txn.save();
+        order.payment = order.payment || {};
         order.payment.status = "failed";
+        order.paymentStatus = "failed";
         order.status = "created";
         await order.save();
         return res.status(400).send("stock error");
@@ -122,8 +128,11 @@ export const paystackWebhook = async (req, res, next) => {
 
       return res.status(200).send("ok");
     } else if (status === "failed") {
+      order.payment = order.payment || {};
       order.payment.status = "failed";
       order.payment.gatewayResponse = verifyResp.data;
+      order.payment.reference = reference;
+      order.paymentStatus = "failed";
       await order.save();
       txn.status = "failed";
       await txn.save();

@@ -3,23 +3,35 @@ import mongoose from "mongoose";
 const orderSchema = new mongoose.Schema(
   {
     orderId: { type: String, required: true, unique: true },
-    customerName: { type: String, required: true },
-    customerEmail: { type: String }, // optional, for receipts
     status: {
       type: String,
-      enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
-      default: "pending",
+      enum: ["created", "pending", "processing", "shipped", "delivered", "cancelled"],
+      default: "created",
     },
-    totalAmount: { type: Number, required: true },
-    profit: { type: Number, default: 0 },
-
     orderItems: [
       {
         product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        name: { type: String },
+        bottleSize: { type: String },
         quantity: { type: Number, required: true, min: 1 },
-        price: { type: Number, required: true },
+        unitPrice: { type: Number, required: true },
+        subtotal: { type: Number, required: true },
       },
     ],
+
+    pricing: {
+      subtotal: { type: Number, required: true },
+      couponDiscount: { type: Number, default: 0 },
+      giftWrapFee: { type: Number, default: 0 },
+      total: { type: Number, required: true },
+    },
+
+    payment: {
+      reference: { type: String },
+      status: { type: String, enum: ["pending", "success", "failed"], default: "pending" },
+      gatewayResponse: { type: mongoose.Schema.Types.Mixed },
+      paidAt: { type: Date },
+    },
 
     paymentStatus: {
       type: String,
@@ -27,7 +39,33 @@ const orderSchema = new mongoose.Schema(
       default: "pending",
     },
 
-    shippingAddress: { type: String }, // optional for later
+    // Customer details and addresses
+    customer: {
+      firstName: { type: String },
+      lastName: { type: String },
+      email: { type: String },
+      phone: { type: String },
+      deliveryType: { type: String, enum: ["ship", "pickup"], default: "ship" },
+      saveInfo: { type: Boolean, default: false },
+      shippingAddress: {
+        company: { type: String },
+        address1: { type: String },
+        address2: { type: String },
+        city: { type: String },
+        state: { type: String },
+        postalCode: { type: String },
+        country: { type: String },
+      },
+      billingAddress: {
+        company: { type: String },
+        address1: { type: String },
+        address2: { type: String },
+        city: { type: String },
+        state: { type: String },
+        postalCode: { type: String },
+        country: { type: String },
+      },
+    },
   },
   { timestamps: true }
 );
