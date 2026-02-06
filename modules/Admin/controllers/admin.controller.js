@@ -36,6 +36,27 @@ export const signinAdmin = async (req, res, next) => {
   }
 };
 
+export const requestPasswordReset = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    await sendResetPasswordLink(email);
+    // respond generically
+    res.json(new ApiResponse(200, "If that email exists, a reset link was sent."));
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const confirmPasswordReset = async (req, res, next) => {
+  try {
+    const { token, newPassword } = req.body;
+    const result = await resetPasswordWithToken(token, newPassword);
+    res.json(new ApiResponse(200, result.message));
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const getMyProfile = async (req, res) => {
   res.json(
     new ApiResponse(200, "Profile fetched", req.admin)

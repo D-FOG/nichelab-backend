@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -13,6 +16,10 @@ import adminOrderRoutes from "./modules/Admin/routes/order.routes.js";
 import adminTransactionRoutes from "./modules/Admin/routes/transaction.routes.js";
 import paystackService from "./modules/paystackIntegrations/services/paystack.service.js";
 import errorHandler from "./middlewares/error.js";
+import swaggerUi from "swagger-ui-express";
+import { getSpec } from "./config/swagger.js";
+//import { setupAdminSwagger } from "./modules/Admin/swaggerSetup.js";
+import adminSpec from "./modules/Admin/swagger.js";
 
 const app = express();
 
@@ -37,6 +44,14 @@ app.post(
   }
 );
 
+// Mount Admin docs before admin routes so auth middleware doesn't block them
+try {
+  const spec = getSpec(adminSpec);
+  app.use("/api/admin/docs", swaggerUi.serve, swaggerUi.setup(spec));
+} catch (err) {
+  console.error("Failed to setup Admin docs:", err);
+}
+
 // Routes
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
@@ -57,5 +72,16 @@ app.use((err, req, res, next) => {
   });
 });
 
+
+// Setup module swagger docs (non-blocking). This will mount docs at `/api/admin/docs`.
+// (async () => {
+//   try {
+//     await setupAdminSwagger(app);
+//   } catch (err) {
+//     // don't crash the app if swagger setup fails
+//     // eslint-disable-next-line no-console
+//     console.error("Swagger setup error:", err);
+//   }
+// })();
 
 export default app;

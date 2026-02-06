@@ -1,5 +1,5 @@
 import express from "express";
-import { signupAdmin, signinAdmin, getMyProfile, createAdminController, fetchAllAdmins, fetchActiveAdmins, fetchAdminStats, updateAdminDetails, disableAdminAccount, changeAdminPassword} from "../controllers/admin.controller.js";
+import { signupAdmin, signinAdmin, getMyProfile, createAdminController, fetchAllAdmins, fetchActiveAdmins, fetchAdminStats, updateAdminDetails, disableAdminAccount, changeAdminPassword, requestPasswordReset, confirmPasswordReset } from "../controllers/admin.controller.js";
 import { adminAuth } from "../../../middlewares/adminAuth.js";
 import { superAdminOnly } from "../../../middlewares/superAdminAuth.js";
 
@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.post("/admin/signup", signupAdmin);
 router.post("/admin/login", signinAdmin);
+router.post("/admin/reset-password", requestPasswordReset);
+router.post("/admin/reset-password/confirm", confirmPasswordReset);
 
 router.use(adminAuth);
 
