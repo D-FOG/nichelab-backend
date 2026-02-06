@@ -1,5 +1,6 @@
 import Product from "../models/products.model.js";
 import { uploadImage } from "../../../utils/cloudinary.js";
+import * as productService from "../services/product.service.js";
 
 // Admin: Create product
 export const createProduct = async (req, res) => {
@@ -91,48 +92,134 @@ export const updateStock = async (req, res) => {
   }
 };
 
-// Public: Get all products
+// Public: Get all products with pagination
 export const getProducts = async (req, res) => {
   try {
-    const { category, tag, size } = req.query;
+    const { page = 1, limit = 10, category, tag, size, search } = req.query;
 
-    const filter = { archived: false };
-
-    if (category) filter.category = category;
-    if (tag) filter.tags = tag;
-    if (size) filter.bottleSize = size;
-
-    const products = await Product.find(filter).sort({ createdAt: -1 });
-
-    return res.json(products);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-};
-
-// Public: Single product
-export const getProduct = async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-
-    return res.json(product);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-};
-
-// Public: Search
-export const searchProducts = async (req, res) => {
-  try {
-    const { q } = req.query;
-
-    const products = await Product.find({
-      archived: false,
-      name: { $regex: q, $options: "i" },
+    const result = await productService.getAllProducts({
+      page,
+      limit,
+      category,
+      tag,
+      size,
+      search,
     });
 
-    return res.json(products);
+    return res.json(result);
   } catch (err) {
     return res.status(500).json({ error: err.message });
+  }
+};
+
+// Public: Get single product by ID
+export const getProduct = async (req, res) => {
+  try {
+    const product = await productService.getProductById(req.params.id);
+    return res.json(product);
+  } catch (err) {
+    return res.status(404).json({ error: err.message });
+  }
+};
+
+// Public: Search products with pagination
+export const searchProducts = async (req, res) => {
+  try {
+    const { q, page = 1, limit = 10 } = req.query;
+
+    if (!q) {
+      return res.status(400).json({ error: "Search query (q) is required" });
+    }
+
+    const result = await productService.searchProducts(q, { page, limit });
+    return res.json(result);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Public: Like a product
+export const likeProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user?.id || req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "User authentication required" });
+    }
+
+    const result = await productService.likeProduct(id, userId);
+    return res.json(result);
+  } catch (err) {
+    if (err.message === "You already liked this product") {
+      return res.status(400).json({ error: err.message });
+    }
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Public: Unlike a product
+export const unlikeProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user?.id || req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "User authentication required" });
+    }
+
+    const result = await productService.unlikeProduct(id, userId);
+    return res.json(result);
+  } catch (err) {
+    if (err.message === "You haven't liked this product yet") {
+      return res.status(400).json({ error: err.message });
+    }
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Public: Check if user liked a product
+export const isLiked = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user?.id || req.user?._id;
+
+    const liked = await productService.isProductLiked(id, userId);
+    return res.json({ liked });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Public: Rate a product
+export const rateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rating, comment } = req.body;
+    const userId = req.user?.id || req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "User authentication required" });
+    }
+
+    if (!rating) {
+      return res.status(400).json({ error: "Rating is required" });
+    }
+
+    const result = await productService.rateProduct(id, userId, rating, comment);
+    return res.json(result);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// Public: Get product ratings
+export const getProductRatings = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await productService.getProductRatings(id);
+    return res.json(result);
+  } catch (err) {
+    return res.status(404).json({ error: err.message });
   }
 };

@@ -9,6 +9,7 @@ import rateLimiter from "./middlewares/rateLimit.js";
 import adminRoutes from "./modules/Admin/routes/admin.route.js";
 import productRoutes from "./modules/products/routes/product.route.js";
 import cartRoute from "./modules/carts/routes/carts.route.js";
+import cartAdminRoute from "./modules/carts/routes/admin.route.js";
 import orderRoutes from "./modules/orders/routes/orders.routes.js";
 import admincategoryRoutes from "./modules/Admin/routes/category.route.js";
 import adminProductRoutes from "./modules/Admin/routes/product.route.js";
@@ -20,6 +21,8 @@ import swaggerUi from "swagger-ui-express";
 import { getSpec } from "./config/swagger.js";
 //import { setupAdminSwagger } from "./modules/Admin/swaggerSetup.js";
 import adminSpec from "./modules/Admin/swagger.js";
+import productSpec from "./modules/products/swagger.js";
+import { cartSpec, couponGiftWrapSpec } from "./modules/carts/swagger.js";
 
 const app = express();
 
@@ -46,7 +49,7 @@ app.post(
 
 // Mount Admin docs before admin routes so auth middleware doesn't block them
 try {
-  const spec = getSpec(adminSpec);
+  const spec = getSpec(adminSpec, productSpec, cartSpec, couponGiftWrapSpec);
   app.use("/api/admin/docs", swaggerUi.serve, swaggerUi.setup(spec));
 } catch (err) {
   console.error("Failed to setup Admin docs:", err);
@@ -54,8 +57,9 @@ try {
 
 // Routes
 app.use("/api/admin", adminRoutes);
+app.use("/api/admin", cartAdminRoute);
 app.use("/api/products", productRoutes);
-app.use("/api/carts", cartRoute);
+app.use("/api/cart", cartRoute);
 app.use("/api", orderRoutes);
 app.use("/api", admincategoryRoutes);
 app.use("/api", adminProductRoutes);

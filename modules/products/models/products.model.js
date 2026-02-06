@@ -55,6 +55,30 @@ const productSchema = new mongoose.Schema(
       }
     ],
 
+    ratings: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        rating: {
+          type: Number,
+          required: true,
+          min: 1,
+          max: 5,
+        },
+        comment: { type: String },
+      },
+    ],
+
+    likedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
     isActive: {
       type: Boolean,
       default: true,
@@ -72,6 +96,25 @@ const productSchema = new mongoose.Schema(
 productSchema.virtual("inStock").get(function () {
   return this.stock > 0;
 });
+
+// Calculate average rating
+productSchema.virtual("averageRating").get(function () {
+  if (this.ratings.length === 0) return 0;
+  const total = this.ratings.reduce((sum, r) => sum + r.rating, 0);
+  return Math.round((total / this.ratings.length) * 10) / 10; // round to 1 decimal
+});
+
+// Check if product is sold out
+productSchema.virtual("soldOut").get(function () {
+  return this.stock === 0;
+});
+
+// Get total likes count
+productSchema.virtual("likesCount").get(function () {
+  return this.likedBy.length;
+});
+
+productSchema.set("toJSON", { virtuals: true });
 
 export default mongoose.model("Product", productSchema);
 
