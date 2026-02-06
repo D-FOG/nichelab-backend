@@ -6,7 +6,8 @@ import {
   getAdminStats,
   updateAdmin,
   disableAdmin,
-  updateAdminPassword
+  updateAdminPassword,
+  sendResetPasswordLink
 } from "../services/admin.service.js";
 //import { ApiResponse } from "../../utils/ApiResponse.js";
 
