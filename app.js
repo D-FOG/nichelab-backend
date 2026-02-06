@@ -24,11 +24,23 @@ import adminSpec from "./modules/Admin/swagger.js";
 import productSpec from "./modules/products/swagger.js";
 import { cartSpec, couponGiftWrapSpec } from "./modules/carts/swagger.js";
 import ordersSpec from "./modules/orders/swagger.js";
+import paystackSpec from "./modules/paystackIntegrations/swagger.js";
+import transactionsSpec from "./modules/Admin/swagger.transactions.js";
 
 const app = express();
 
 // Global Middlewares
-app.use(cors());
+// Configure CORS to allow frontend origin, credentials and required headers
+const corsOptions = {
+  origin: process.env.CLIENT_ORIGIN || true,
+  credentials: true,
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-paystack-signature", "X-Requested-With"],
+  exposedHeaders: ["Authorization", "x-paystack-signature"],
+};
+app.use(cors(corsOptions));
+// Preflight is handled by the global `cors` middleware; explicit
+// `app.options()` caused path-to-regexp parsing errors and was removed.
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
@@ -50,7 +62,15 @@ app.post(
 
 // Mount Admin docs before admin routes so auth middleware doesn't block them
 try {
-  const spec = getSpec(adminSpec, productSpec, cartSpec, couponGiftWrapSpec, ordersSpec);
+  const spec = getSpec(
+    adminSpec,
+    productSpec,
+    cartSpec,
+    couponGiftWrapSpec,
+    ordersSpec,
+    transactionsSpec,
+    paystackSpec
+  );
   app.use("/api/admin/docs", swaggerUi.serve, swaggerUi.setup(spec));
 } catch (err) {
   console.error("Failed to setup Admin docs:", err);
