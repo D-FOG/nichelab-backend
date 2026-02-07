@@ -183,6 +183,201 @@ export default {
         responses: { "200": { description: "Password updated successfully" }, "400": { description: "Invalid or expired token" } },
       },
     },
+    "/api/admin/products": {
+      post: {
+        tags: ["Admin"],
+        summary: "Create a new product (superadmin)",
+        description: "Create a product with images (multipart form data)",
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  description: { type: "string" },
+                  price: { type: "number" },
+                  category: { type: "string" },
+                  stock: { type: "number" },
+                  images: { type: "array", items: { type: "string", format: "binary" } },
+                  tags: { type: "array", items: { type: "string" } },
+                },
+                required: ["name", "price", "category", "stock"],
+              },
+            },
+          },
+        },
+        responses: { "201": { description: "Product created" }, "400": { description: "Bad request" } },
+      },
+      get: {
+        tags: ["Admin"],
+        summary: "Get all products (superadmin)",
+        responses: { "200": { description: "Products list" } },
+      },
+    },
+    "/api/admin/products/{productId}": {
+      get: {
+        tags: ["Admin"],
+        summary: "Get product by id (superadmin)",
+        parameters: [{ name: "productId", in: "path", required: true, schema: { type: "string" } }],
+        responses: { "200": { description: "Product" }, "404": { description: "Not found" } },
+      },
+      put: {
+        tags: ["Admin"],
+        summary: "Update product (superadmin)",
+        parameters: [{ name: "productId", in: "path", required: true, schema: { type: "string" } }],
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  description: { type: "string" },
+                  price: { type: "number" },
+                  category: { type: "string" },
+                  stock: { type: "number" },
+                  images: { type: "array", items: { type: "string", format: "binary" } },
+                  tags: { type: "array", items: { type: "string" } },
+                },
+              },
+            },
+          },
+        },
+        responses: { "200": { description: "Product updated" }, "404": { description: "Not found" } },
+      },
+      delete: {
+        tags: ["Admin"],
+        summary: "Delete product (superadmin)",
+        parameters: [{ name: "productId", in: "path", required: true, schema: { type: "string" } }],
+        responses: { "200": { description: "Product deleted" }, "404": { description: "Not found" } },
+      },
+    },
+    "/api/admin/categories/{categoryId}/products": {
+      get: {
+        tags: ["Admin"],
+        summary: "Get products by category (superadmin)",
+        parameters: [{ name: "categoryId", in: "path", required: true, schema: { type: "string" } }],
+        responses: { "200": { description: "Products list" }, "404": { description: "Category not found" } },
+      },
+    },
+    "/api/admin/categories": {
+      post: {
+        tags: ["Admin"],
+        summary: "Create a new category (superadmin)",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  description: { type: "string" },
+                },
+                required: ["name"],
+              },
+            },
+          },
+        },
+        responses: { "201": { description: "Category created" }, "400": { description: "Bad request" } },
+      },
+      get: {
+        tags: ["Admin"],
+        summary: "Get all categories (superadmin)",
+        responses: { "200": { description: "Categories list" } },
+      },
+    },
+    "/api/admin/categories/{categoryId}": {
+      get: {
+        tags: ["Admin"],
+        summary: "Get category by id (superadmin)",
+        parameters: [{ name: "categoryId", in: "path", required: true, schema: { type: "string" } }],
+        responses: { "200": { description: "Category" }, "404": { description: "Not found" } },
+      },
+      put: {
+        tags: ["Admin"],
+        summary: "Update category (superadmin)",
+        parameters: [{ name: "categoryId", in: "path", required: true, schema: { type: "string" } }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  description: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+        responses: { "200": { description: "Category updated" }, "404": { description: "Not found" } },
+      },
+      delete: {
+        tags: ["Admin"],
+        summary: "Delete category (superadmin)",
+        parameters: [{ name: "categoryId", in: "path", required: true, schema: { type: "string" } }],
+        responses: { "200": { description: "Category deleted" }, "404": { description: "Not found" } },
+      },
+    },
+    "/api/admin/orders": {
+      get: {
+        tags: ["Admin"],
+        summary: "Get all orders (superadmin)",
+        responses: { "200": { description: "Orders list" } },
+      },
+    },
+    "/api/admin/orders/{orderId}": {
+      get: {
+        tags: ["Admin"],
+        summary: "Get order by id (superadmin)",
+        parameters: [{ name: "orderId", in: "path", required: true, schema: { type: "string" } }],
+        responses: { "200": { description: "Order details" }, "404": { description: "Not found" } },
+      },
+      delete: {
+        tags: ["Admin"],
+        summary: "Delete order (superadmin)",
+        parameters: [{ name: "orderId", in: "path", required: true, schema: { type: "string" } }],
+        responses: { "200": { description: "Order deleted" }, "404": { description: "Not found" } },
+      },
+    },
+    "/api/admin/orders/{orderId}/status": {
+      patch: {
+        tags: ["Admin"],
+        summary: "Update order status (superadmin)",
+        parameters: [{ name: "orderId", in: "path", required: true, schema: { type: "string" } }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  status: {
+                    type: "string",
+                    enum: ["created", "pending", "processing", "shipped", "delivered", "cancelled"],
+                  },
+                },
+                required: ["status"],
+              },
+            },
+          },
+        },
+        responses: { "200": { description: "Order status updated" }, "404": { description: "Not found" } },
+      },
+    },
+    "/api/admin/dashboard/stats": {
+      get: {
+        tags: ["Admin"],
+        summary: "Get admin dashboard statistics (superadmin)",
+        description: "Fetches dashboard stats including total orders, revenue, transactions, etc.",
+        responses: { "200": { description: "Dashboard statistics" } },
+      },
+    },
   },
   components: {
     schemas: {
@@ -194,6 +389,43 @@ export default {
           lastName: { type: "string" },
           email: { type: "string", format: "email" },
           role: { type: "string" },
+        },
+      },
+      Product: {
+        type: "object",
+        properties: {
+          _id: { type: "string" },
+          name: { type: "string" },
+          description: { type: "string" },
+          price: { type: "number" },
+          category: { type: "string" },
+          stock: { type: "number" },
+          images: { type: "array", items: { type: "string" } },
+          tags: { type: "array", items: { type: "string" } },
+          ratings: { type: "array" },
+          createdAt: { type: "string", format: "date-time" },
+        },
+      },
+      Category: {
+        type: "object",
+        properties: {
+          _id: { type: "string" },
+          name: { type: "string" },
+          description: { type: "string" },
+          createdAt: { type: "string", format: "date-time" },
+        },
+      },
+      Order: {
+        type: "object",
+        properties: {
+          _id: { type: "string" },
+          orderId: { type: "string" },
+          status: { type: "string" },
+          orderItems: { type: "array" },
+          pricing: { type: "object" },
+          customer: { type: "object" },
+          paymentStatus: { type: "string" },
+          createdAt: { type: "string", format: "date-time" },
         },
       },
     },
