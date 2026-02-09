@@ -6,7 +6,7 @@ export const productSpec = {
     },
   ],
   paths: {
-    "/products": {
+    "/api/products": {
       get: {
         tags: ["Products"],
         summary: "Get all products with pagination",
@@ -81,7 +81,7 @@ export const productSpec = {
         },
       },
     },
-    "/products/{id}": {
+    "/api/products/{id}": {
       get: {
         tags: ["Products"],
         summary: "Get a specific product",
@@ -110,7 +110,7 @@ export const productSpec = {
         },
       },
     },
-    "/products/search": {
+    "/api/products/search": {
       get: {
         tags: ["Products"],
         summary: "Search products",
@@ -168,7 +168,7 @@ export const productSpec = {
         },
       },
     },
-    "/products/{id}/like": {
+    "/api/products/{id}/like": {
       post: {
         tags: ["Products"],
         summary: "Like a product",
@@ -208,7 +208,7 @@ export const productSpec = {
         },
       },
     },
-    "/products/{id}/unlike": {
+    "/api/products/{id}/unlike": {
       post: {
         tags: ["Products"],
         summary: "Unlike a product",
@@ -248,7 +248,7 @@ export const productSpec = {
         },
       },
     },
-    "/products/{id}/is-liked": {
+    "/api/products/{id}/is-liked": {
       get: {
         tags: ["Products"],
         summary: "Check if product is liked",
@@ -279,7 +279,7 @@ export const productSpec = {
         },
       },
     },
-    "/products/{id}/rate": {
+    "/api/products/{id}/rate": {
       post: {
         tags: ["Products"],
         summary: "Rate a product",
@@ -342,7 +342,7 @@ export const productSpec = {
         },
       },
     },
-    "/products/{id}/ratings": {
+    "/api/products/{id}/ratings": {
       get: {
         tags: ["Products"],
         summary: "Get product ratings",
