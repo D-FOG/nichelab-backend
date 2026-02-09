@@ -3,8 +3,10 @@ import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 export const createProductController = async (req, res, next) => {
     try {
-        const { name, description, price, bottleSize, categoryId, stock, tags } = req.body;
-        const product = await createProduct(name, description, price, bottleSize, categoryId, stock, tags, req.files);
+        const { name, description, price, bottleSize, category, categoryId, stock, tags } = req.body;
+        // Support both `category` and `categoryId` field names (form data may use either)
+        const finalCategoryId = categoryId || category;
+        const product = await createProduct(name, description, price, bottleSize, finalCategoryId, stock, tags, req.files);
         return res.status(201).json(new ApiResponse(201, "Product created successfully", product));
     } catch (err) {
         next(err);
