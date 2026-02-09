@@ -6,7 +6,7 @@ export const cartSpec = {
     },
   ],
   paths: {
-    "/cart/{cartId}": {
+    "/api/cart/{cartId}": {
       get: {
         tags: ["Cart"],
         summary: "Get or create cart",
@@ -31,7 +31,7 @@ export const cartSpec = {
         },
       },
     },
-    "/cart/{cartId}/add": {
+    "/api/cart/{cartId}/add": {
       post: {
         tags: ["Cart"],
         summary: "Add item to cart",
@@ -72,7 +72,7 @@ export const cartSpec = {
         },
       },
     },
-    "/cart/{cartId}/item/{itemId}": {
+    "/api/cart/{cartId}/item/{itemId}": {
       patch: {
         tags: ["Cart"],
         summary: "Update item quantity",
@@ -134,7 +134,7 @@ export const cartSpec = {
         },
       },
     },
-    "/cart/{cartId}/clear": {
+    "/api/cart/{cartId}/clear": {
       delete: {
         tags: ["Cart"],
         summary: "Clear entire cart",
@@ -153,7 +153,7 @@ export const cartSpec = {
         },
       },
     },
-    "/cart/{cartId}/coupon/apply": {
+    "/api/cart/{cartId}/coupon/apply": {
       post: {
         tags: ["Cart"],
         summary: "Apply coupon to cart",
@@ -189,7 +189,7 @@ export const cartSpec = {
         },
       },
     },
-    "/cart/{cartId}/coupon": {
+    "/api/cart/{cartId}/coupon": {
       delete: {
         tags: ["Cart"],
         summary: "Remove coupon from cart",
@@ -208,7 +208,7 @@ export const cartSpec = {
         },
       },
     },
-    "/cart/{cartId}/gift-wrap/apply": {
+    "/api/cart/{cartId}/gift-wrap/apply": {
       post: {
         tags: ["Cart"],
         summary: "Apply gift wrap to cart",
@@ -241,7 +241,7 @@ export const cartSpec = {
         },
       },
     },
-    "/cart/{cartId}/gift-wrap": {
+    "/api/cart/{cartId}/gift-wrap": {
       delete: {
         tags: ["Cart"],
         summary: "Remove gift wrap from cart",
@@ -260,7 +260,7 @@ export const cartSpec = {
         },
       },
     },
-    "/cart/{cartId}/gift-wraps": {
+    "/api/cart/{cartId}/gift-wraps": {
       get: {
         tags: ["Cart"],
         summary: "Get available gift wraps",
@@ -279,7 +279,7 @@ export const cartSpec = {
         },
       },
     },
-    "/cart/{cartId}/validate": {
+    "/api/cart/{cartId}/validate": {
       post: {
         tags: ["Cart"],
         summary: "Validate cart total",
@@ -386,7 +386,7 @@ export const couponGiftWrapSpec = {
     },
   ],
   paths: {
-    "/admin/coupons": {
+    "/api/admin/coupons": {
       post: {
         tags: ["Admin - Coupons"],
         summary: "Create coupon",
@@ -432,7 +432,7 @@ export const couponGiftWrapSpec = {
         },
       },
     },
-    "/admin/coupons/{id}": {
+    "/api/admin/coupons/{id}": {
       get: {
         tags: ["Admin - Coupons"],
         summary: "Get coupon",
@@ -502,7 +502,7 @@ export const couponGiftWrapSpec = {
         },
       },
     },
-    "/admin/coupons/{id}/reset-usage": {
+    "/api/admin/coupons/{id}/reset-usage": {
       patch: {
         tags: ["Admin - Coupons"],
         summary: "Reset coupon usage counter",
@@ -520,7 +520,7 @@ export const couponGiftWrapSpec = {
         },
       },
     },
-    "/admin/gift-wraps": {
+    "/api/admin/gift-wraps": {
       post: {
         tags: ["Admin - Gift Wraps"],
         summary: "Create gift wrap",
@@ -561,7 +561,7 @@ export const couponGiftWrapSpec = {
         },
       },
     },
-    "/admin/gift-wraps/{id}": {
+    "/api/admin/gift-wraps/{id}": {
       get: {
         tags: ["Admin - Gift Wraps"],
         summary: "Get gift wrap",
