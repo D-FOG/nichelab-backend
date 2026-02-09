@@ -2,7 +2,7 @@ import { createCategory, updateCategory, deleteCategory, getAllCategories, getCa
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 export const createCategoryController = async (req, res, next) => {
-  try {s
+  try {
     const { name, description } = req.body;
     const category = await createCategory(name, description);
     return new ApiResponse(201, "Category created successfully", category);
@@ -15,7 +15,7 @@ export const updateCategoryController = async (req, res, next) => {
   try {
     const { categoryId } = req.params;  
     const { name, description, isActive } = req.body;
-    const category = await updateCategory(categoryID, name, description, isActive);
+    const category = await updateCategory(categoryId, name, description, isActive);
     return res.status(200).json(new ApiResponse(200, "Category updated successfully", category));
   }catch (err) {
     next(err);
