@@ -4,7 +4,7 @@ export default {
     { name: "Admin", description: "Admin module endpoints" },
   ],
   paths: {
-    "/api/admin/admin/signup": {
+    "/api/admin/signup": {
       post: {
         tags: ["Admin"],
         summary: "Create an admin (self-signup)",
@@ -28,7 +28,7 @@ export default {
         responses: { "201": { description: "Admin created" } },
       },
     },
-    "/api/admin/admin/login": {
+    "/api/admin/login": {
       post: {
         tags: ["Admin"],
         summary: "Admin login",
@@ -50,14 +50,14 @@ export default {
         responses: { "200": { description: "Login successful" }, "401": { description: "Unauthorized" } },
       },
     },
-    "/api/admin/admins/me": {
+    "/api/admins/me": {
       get: {
         tags: ["Admin"],
         summary: "Get current admin profile",
         responses: { "200": { description: "Profile fetched" }, "401": { description: "Unauthorized" } },
       },
     },
-    "/api/admin/admins": {
+    "/api/admins": {
       post: {
         tags: ["Admin"],
         summary: "Create admin (superadmin)",
@@ -86,21 +86,21 @@ export default {
         responses: { "200": { description: "Admins fetched" }, "403": { description: "Forbidden" } },
       },
     },
-    "/api/admin/admins/active": {
+    "/api/admins/active": {
       get: {
         tags: ["Admin"],
         summary: "Fetch active admins",
         responses: { "200": { description: "Active admins" } },
       },
     },
-    "/api/admin/admins/stats": {
+    "/api/admins/stats": {
       get: {
         tags: ["Admin"],
         summary: "Get admin statistics",
         responses: { "200": { description: "Stats fetched" } },
       },
     },
-    "/api/admin/admins/{id}": {
+    "/api/admins/{id}": {
       patch: {
         tags: ["Admin"],
         summary: "Update admin details (superadmin)",
@@ -118,7 +118,7 @@ export default {
         responses: { "200": { description: "Admin disabled" }, "404": { description: "Not found" } },
       },
     },
-    "/api/admin/admins/change-password": {
+    "/api/admins/change-password": {
       post: {
         tags: ["Admin"],
         summary: "Change current admin password",
@@ -140,7 +140,7 @@ export default {
         responses: { "200": { description: "Password changed" }, "400": { description: "Bad request" } },
       },
     },
-    "/api/admin/admin/reset-password": {
+    "/api/admin/reset-password": {
       post: {
         tags: ["Admin"],
         summary: "Request a password reset link",
@@ -161,7 +161,7 @@ export default {
         responses: { "200": { description: "If that email exists, a reset link was sent" } },
       },
     },
-    "/api/admin/admin/reset-password/confirm": {
+    "/api/admin/reset-password/confirm": {
       post: {
         tags: ["Admin"],
         summary: "Confirm password reset with token",
