@@ -77,7 +77,7 @@ try {
 }
 
 // Routes
-app.use("/api", adminRoutes);
+app.use("/api/auth", adminRoutes);
 app.use("/api/admin", cartAdminRoute);
 app.use("/api", productRoutes);
 app.use("/api/cart", cartRoute);
