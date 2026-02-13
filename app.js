@@ -82,9 +82,9 @@ app.use("/api/admin", cartAdminRoute);
 app.use("/api", productRoutes);
 app.use("/api/cart", cartRoute);
 app.use("/api", orderRoutes);
-app.use("/api", admincategoryRoutes);
-app.use("/api", adminProductRoutes);
-app.use("/api", adminOrderRoutes);
+app.use("/api/auth", admincategoryRoutes);
+app.use("/api/auth", adminProductRoutes);
+app.use("/api/auth", adminOrderRoutes);
 app.use("/api", adminTransactionRoutes);
 
 // Error Handler

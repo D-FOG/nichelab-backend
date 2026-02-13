@@ -4,7 +4,7 @@ export default {
     { name: "Admin", description: "Admin module endpoints" },
   ],
   paths: {
-    "/api/admin/signup": {
+    "/api/auth/admin/signup": {
       post: {
         tags: ["Admin"],
         summary: "Create an admin (self-signup)",
@@ -28,7 +28,7 @@ export default {
         responses: { "201": { description: "Admin created" } },
       },
     },
-    "/api/admin/login": {
+    "/api/auth/admin/login": {
       post: {
         tags: ["Admin"],
         summary: "Admin login",
@@ -50,14 +50,14 @@ export default {
         responses: { "200": { description: "Login successful" }, "401": { description: "Unauthorized" } },
       },
     },
-    "/api/admins/me": {
+    "/api/auth/admins/me": {
       get: {
         tags: ["Admin"],
         summary: "Get current admin profile",
         responses: { "200": { description: "Profile fetched" }, "401": { description: "Unauthorized" } },
       },
     },
-    "/api/admins": {
+    "/api/auth/admins": {
       post: {
         tags: ["Admin"],
         summary: "Create admin (superadmin)",
@@ -86,21 +86,21 @@ export default {
         responses: { "200": { description: "Admins fetched" }, "403": { description: "Forbidden" } },
       },
     },
-    "/api/admins/active": {
+    "/api/auth/admins/active": {
       get: {
         tags: ["Admin"],
         summary: "Fetch active admins",
         responses: { "200": { description: "Active admins" } },
       },
     },
-    "/api/admins/stats": {
+    "/api/auth/admins/stats": {
       get: {
         tags: ["Admin"],
         summary: "Get admin statistics",
         responses: { "200": { description: "Stats fetched" } },
       },
     },
-    "/api/admins/{id}": {
+    "/api/auth/admins/{id}": {
       patch: {
         tags: ["Admin"],
         summary: "Update admin details (superadmin)",
@@ -118,7 +118,7 @@ export default {
         responses: { "200": { description: "Admin disabled" }, "404": { description: "Not found" } },
       },
     },
-    "/api/admins/change-password": {
+    "/api/auth/admins/change-password": {
       post: {
         tags: ["Admin"],
         summary: "Change current admin password",
@@ -140,7 +140,7 @@ export default {
         responses: { "200": { description: "Password changed" }, "400": { description: "Bad request" } },
       },
     },
-    "/api/admin/reset-password": {
+    "/api/auth/admin/reset-password": {
       post: {
         tags: ["Admin"],
         summary: "Request a password reset link",
@@ -161,7 +161,7 @@ export default {
         responses: { "200": { description: "If that email exists, a reset link was sent" } },
       },
     },
-    "/api/admin/reset-password/confirm": {
+    "/api/auth/admin/reset-password/confirm": {
       post: {
         tags: ["Admin"],
         summary: "Confirm password reset with token",
@@ -183,7 +183,7 @@ export default {
         responses: { "200": { description: "Password updated successfully" }, "400": { description: "Invalid or expired token" } },
       },
     },
-    "/api/admin/products": {
+    "/api/auth/admin/products": {
       post: {
         tags: ["Admin"],
         summary: "Create a new product (superadmin)",
@@ -217,7 +217,7 @@ export default {
         responses: { "200": { description: "Products list" } },
       },
     },
-    "/api/admin/products/{productId}": {
+    "/api/auth/admin/products/{productId}": {
       get: {
         tags: ["Admin"],
         summary: "Get product by id (superadmin)",
@@ -257,7 +257,7 @@ export default {
         responses: { "200": { description: "Product deleted" }, "404": { description: "Not found" } },
       },
     },
-    "/api/admin/categories/{categoryId}/products": {
+    "/api/auth/admin/categories/{categoryId}/products": {
       get: {
         tags: ["Admin"],
         summary: "Get products by category (superadmin)",
@@ -265,7 +265,7 @@ export default {
         responses: { "200": { description: "Products list" }, "404": { description: "Category not found" } },
       },
     },
-    "/api/admin/categories": {
+    "/api/auth/admin/categories": {
       post: {
         tags: ["Admin"],
         summary: "Create a new category (superadmin)",
@@ -292,7 +292,7 @@ export default {
         responses: { "200": { description: "Categories list" } },
       },
     },
-    "/api/admin/categories/{categoryId}": {
+    "/api/auth/admin/categories/{categoryId}": {
       get: {
         tags: ["Admin"],
         summary: "Get category by id (superadmin)",
@@ -326,14 +326,14 @@ export default {
         responses: { "200": { description: "Category deleted" }, "404": { description: "Not found" } },
       },
     },
-    "/api/admin/orders": {
+    "/api/auth/admin/orders": {
       get: {
         tags: ["Admin"],
         summary: "Get all orders (superadmin)",
         responses: { "200": { description: "Orders list" } },
       },
     },
-    "/api/admin/orders/{orderId}": {
+    "/api/auth/admin/orders/{orderId}": {
       get: {
         tags: ["Admin"],
         summary: "Get order by id (superadmin)",
@@ -347,7 +347,7 @@ export default {
         responses: { "200": { description: "Order deleted" }, "404": { description: "Not found" } },
       },
     },
-    "/api/admin/orders/{orderId}/status": {
+    "/api/auth/admin/orders/{orderId}/status": {
       patch: {
         tags: ["Admin"],
         summary: "Update order status (superadmin)",
@@ -372,7 +372,7 @@ export default {
         responses: { "200": { description: "Order status updated" }, "404": { description: "Not found" } },
       },
     },
-    "/api/admin/dashboard/stats": {
+    "/api/auth/admin/dashboard/stats": {
       get: {
         tags: ["Admin"],
         summary: "Get admin dashboard statistics (superadmin)",
