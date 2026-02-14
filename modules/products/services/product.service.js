@@ -47,14 +47,30 @@ export const getAllProducts = async ({
 export const getProductById = async (productId) => {
   const product = await Product.findById(productId)
     .populate("category", "name")
-    .populate("name email");
+    .lean({ virtuals: true }); // ensures virtuals are included
 
   if (!product) {
     throw new Error("Product not found");
   }
 
-  return product;
+  return {
+    ...product,
+    ratings: product.ratings,
+    averageRating: product.averageRating,
+    likesCount: product.likesCount,
+  };
 };
+// export const getProductById = async (productId) => {
+//   const product = await Product.findById(productId)
+//     .populate("category", "name")
+//     // .populate("name email");
+
+//   if (!product) {
+//     throw new Error("Product not found");
+//   }
+
+//   return product;
+// };
 
 /**
  * Like a product
