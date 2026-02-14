@@ -47,7 +47,7 @@ export const getAllProducts = async ({
 export const getProductById = async (productId) => {
   const product = await Product.findById(productId)
     .populate("category", "name")
-    .populate("ratings.userId", "name email");
+    .populate("name email");
 
   if (!product) {
     throw new Error("Product not found");
@@ -59,57 +59,88 @@ export const getProductById = async (productId) => {
 /**
  * Like a product
  */
-export const likeProduct = async (productId, userId) => {
+
+export const likeProduct = async (productId) => {
   const product = await Product.findById(productId);
 
   if (!product) {
     throw new Error("Product not found");
   }
 
-  // Check if user already liked it
-  const alreadyLiked = product.likedBy.includes(userId);
-
-  if (alreadyLiked) {
-    throw new Error("You already liked this product");
-  }
-
-  product.likedBy.push(userId);
+  product.likedBy += 1;
   await product.save();
 
   return {
     message: "Product liked successfully",
-    liked: true,
-    likesCount: product.likedBy.length,
+    likesCount: product.likedBy,
   };
 };
+// export const likeProduct = async (productId, userId) => {
+//   const product = await Product.findById(productId);
+
+//   if (!product) {
+//     throw new Error("Product not found");
+//   }
+
+//   // Check if user already liked it
+//   const alreadyLiked = product.likedBy.includes(userId);
+
+//   if (alreadyLiked) {
+//     throw new Error("You already liked this product");
+//   }
+
+//   product.likedBy.push(userId);
+//   await product.save();
+
+//   return {
+//     message: "Product liked successfully",
+//     liked: true,
+//     likesCount: product.likedBy.length,
+//   };
+// };
 
 /**
  * Unlike a product
  */
-export const unlikeProduct = async (productId, userId) => {
+export const unlikeProduct = async (productId) => {
   const product = await Product.findById(productId);
 
   if (!product) {
     throw new Error("Product not found");
   }
 
-  const alreadyLiked = product.likedBy.includes(userId);
-
-  if (!alreadyLiked) {
-    throw new Error("You haven't liked this product yet");
-  }
-
-  product.likedBy = product.likedBy.filter(
-    (id) => id.toString() !== userId.toString()
-  );
+  product.likedBy = Math.max(0, product.likedBy - 1);
   await product.save();
 
   return {
     message: "Product unliked successfully",
-    liked: false,
-    likesCount: product.likedBy.length,
+    likesCount: product.likedBy,
   };
 };
+// export const unlikeProduct = async (productId, userId) => {
+//   const product = await Product.findById(productId);
+
+//   if (!product) {
+//     throw new Error("Product not found");
+//   }
+
+//   const alreadyLiked = product.likedBy.includes(userId);
+
+//   if (!alreadyLiked) {
+//     throw new Error("You haven't liked this product yet");
+//   }
+
+//   product.likedBy = product.likedBy.filter(
+//     (id) => id.toString() !== userId.toString()
+//   );
+//   await product.save();
+
+//   return {
+//     message: "Product unliked successfully",
+//     liked: false,
+//     likesCount: product.likedBy.length,
+//   };
+// };
 
 /**
  * Check if user liked a product
@@ -129,37 +160,29 @@ export const isProductLiked = async (productId, userId) => {
 /**
  * Add or update rating for a product
  */
-export const rateProduct = async (productId, userId, rating, comment = "") => {
+export const rateProduct = async (
+  id,
+  rating,
+  comment = "",
+  name = "Anonymous"
+) => {
   if (rating < 1 || rating > 5) {
     throw new Error("Rating must be between 1 and 5");
   }
 
-  const product = await Product.findById(productId);
+  const product = await Product.findById(id);
 
   if (!product) {
     throw new Error("Product not found");
   }
 
-  // Check if user already rated this product
-  const existingRatingIndex = product.ratings.findIndex(
-    (r) => r.userId.toString() === userId.toString()
-  );
-
-  if (existingRatingIndex !== -1) {
-    // Update existing rating
-    product.ratings[existingRatingIndex].rating = rating;
-    product.ratings[existingRatingIndex].comment = comment;
-  } else {
-    // Add new rating
-    product.ratings.push({
-      userId,
-      rating,
-      comment,
-    });
-  }
+  product.ratings.push({
+    rating,
+    comment,
+    name,
+  });
 
   await product.save();
-  await product.populate("ratings.userId", "name email");
 
   return {
     message: "Rating added successfully",
@@ -167,6 +190,44 @@ export const rateProduct = async (productId, userId, rating, comment = "") => {
     totalRatings: product.ratings.length,
   };
 };
+// export const rateProduct = async (productId, userId, rating, comment = "") => {
+//   if (rating < 1 || rating > 5) {
+//     throw new Error("Rating must be between 1 and 5");
+//   }
+
+//   const product = await Product.findById(productId);
+
+//   if (!product) {
+//     throw new Error("Product not found");
+//   }
+
+//   // Check if user already rated this product
+//   const existingRatingIndex = product.ratings.findIndex(
+//     (r) => r.userId.toString() === userId.toString()
+//   );
+
+//   if (existingRatingIndex !== -1) {
+//     // Update existing rating
+//     product.ratings[existingRatingIndex].rating = rating;
+//     product.ratings[existingRatingIndex].comment = comment;
+//   } else {
+//     // Add new rating
+//     product.ratings.push({
+//       userId,
+//       rating,
+//       comment,
+//     });
+//   }
+
+//   await product.save();
+//   await product.populate("ratings.userId", "name email");
+
+//   return {
+//     message: "Rating added successfully",
+//     averageRating: product.averageRating,
+//     totalRatings: product.ratings.length,
+//   };
+// };
 
 /**
  * Get ratings for a product

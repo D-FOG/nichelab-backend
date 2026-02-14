@@ -142,13 +142,8 @@ export const searchProducts = async (req, res) => {
 export const likeProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user?.id || req.user?._id;
 
-    if (!userId) {
-      return res.status(401).json({ error: "User authentication required" });
-    }
-
-    const result = await productService.likeProduct(id, userId);
+    const result = await productService.likeProduct(id);
     return res.json(result);
   } catch (err) {
     if (err.message === "You already liked this product") {
@@ -162,13 +157,8 @@ export const likeProduct = async (req, res) => {
 export const unlikeProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user?.id || req.user?._id;
-
-    if (!userId) {
-      return res.status(401).json({ error: "User authentication required" });
-    }
-
-    const result = await productService.unlikeProduct(id, userId);
+  
+    const result = await productService.unlikeProduct(id);
     return res.json(result);
   } catch (err) {
     if (err.message === "You haven't liked this product yet") {
@@ -182,9 +172,8 @@ export const unlikeProduct = async (req, res) => {
 export const isLiked = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user?.id || req.user?._id;
-
-    const liked = await productService.isProductLiked(id, userId);
+    
+    const liked = await productService.isProductLiked(id);
     return res.json({ liked });
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -195,18 +184,13 @@ export const isLiked = async (req, res) => {
 export const rateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { rating, comment } = req.body;
-    const userId = req.user?.id || req.user?._id;
-
-    if (!userId) {
-      return res.status(401).json({ error: "User authentication required" });
-    }
+    const { rating, comment, name } = req.body;
 
     if (!rating) {
       return res.status(400).json({ error: "Rating is required" });
     }
 
-    const result = await productService.rateProduct(id, userId, rating, comment);
+    const result = await productService.rateProduct(id, rating, comment, name);
     return res.json(result);
   } catch (err) {
     return res.status(500).json({ error: err.message });
