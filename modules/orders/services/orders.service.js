@@ -85,6 +85,11 @@ export async function createCheckout({ cartId, items: bodyItems, customer = {}, 
   });
 
   // Initialize Paystack transaction
+  console.log("PAYSTACK KEY EXISTS:", !!process.env.PAYSTACK_SECRET_KEY);
+  console.log(
+    "PAYSTACK KEY PREFIX:",
+    process.env.PAYSTACK_SECRET_KEY?.slice(0, 7)
+  );
   const reference = `${order._id.toString()}-${Date.now()}`;
   const init = await paystack.paystackInit({
     amountKobo: KOBOS(pricing.total),
