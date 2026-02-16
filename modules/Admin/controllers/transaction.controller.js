@@ -22,7 +22,7 @@ export const getTransactionByIdController = async (req, res, next) => {
 
 export const getTransactionsByStatusController = async (req, res, next) => {
   try {
-    const { status } = req.params;
+    const status = req.params.status.toLowerCase();
     const transactions = await getTransactionsByStatus(status);
     return res.status(200).json(new ApiResponse(200, "Transactions fetched successfully", transactions));
   } catch (err) {

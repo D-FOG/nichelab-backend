@@ -1,4 +1,5 @@
 import Product from "../models/products.model.js";
+import Category from "../models/category.model.js";
 
 /**
  * Get all products with pagination and filters
@@ -287,6 +288,60 @@ export const searchProducts = async (query, { page = 1, limit = 10 } = {}) => {
 
   return {
     data: products,
+    pagination: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      pages: Math.ceil(total / limit),
+    },
+  };
+};
+export const getProductsByCategory = async (
+  categoryId,
+  { page = 1, limit = 10 } = {}
+) => {
+  const skip = (page - 1) * limit;
+
+  const filter = {
+    archived: false,
+    category: categoryId,
+  };
+
+  const [products, total] = await Promise.all([
+    Product.find(filter)
+      .populate("category", "name")
+      .skip(skip)
+      .limit(Number(limit))
+      .sort({ createdAt: -1 }),
+    Product.countDocuments(filter),
+  ]);
+
+  return {
+    data: products,
+    pagination: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      pages: Math.ceil(total / limit),
+    },
+  };
+};
+
+export const getAllCategories = async ({ page = 1, limit = 10 } = {}) => {
+  const skip = (page - 1) * limit;
+
+  const filter = { isActive: true };
+
+  const [categories, total] = await Promise.all([
+    Category.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit)),
+    Category.countDocuments(filter),
+  ]);
+
+  return {
+    data: categories,
     pagination: {
       total,
       page: Number(page),

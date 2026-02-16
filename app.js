@@ -102,7 +102,7 @@ app.use("/api", orderRoutes);
 app.use("/api/auth", admincategoryRoutes);
 app.use("/api/auth", adminProductRoutes);
 app.use("/api/auth", adminOrderRoutes);
-app.use("/api", adminTransactionRoutes);
+app.use("/api/auth", adminTransactionRoutes);
 
 // Error Handler
 //app.use(errorHandler);

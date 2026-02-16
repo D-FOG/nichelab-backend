@@ -388,6 +388,120 @@ export const productSpec = {
         },
       },
     },
+    "/api/products/category/{categoryId}": {
+      get: {
+        tags: ["Products"],
+        summary: "Get products by category",
+        description: "Retrieve all products belonging to a specific category",
+        parameters: [
+          {
+            name: "categoryId",
+            in: "path",
+            required: true,
+            description: "Category ID",
+            schema: { type: "string" },
+          },
+          {
+            name: "page",
+            in: "query",
+            description: "Page number (default: 1)",
+            schema: { type: "integer", default: 1 },
+          },
+          {
+            name: "limit",
+            in: "query",
+            description: "Number of products per page (default: 10)",
+            schema: { type: "integer", default: 10 },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Products retrieved successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    data: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/Product" },
+                    },
+                    pagination: {
+                      type: "object",
+                      properties: {
+                        total: { type: "integer" },
+                        page: { type: "integer" },
+                        limit: { type: "integer" },
+                        pages: { type: "integer" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: "Category not found or no products",
+          },
+        },
+      },
+    },
+    "/api/categories": {
+      get: {
+        tags: ["Categories"],
+        summary: "Get all categories",
+        description: "Retrieve all non-archived categories with pagination",
+        parameters: [
+          {
+            name: "page",
+            in: "query",
+            description: "Page number (default: 1)",
+            schema: {
+              type: "integer",
+              default: 1,
+            },
+          },
+          {
+            name: "limit",
+            in: "query",
+            description: "Number of categories per page (default: 10)",
+            schema: {
+              type: "integer",
+              default: 10,
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Categories retrieved successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    data: {
+                      type: "array",
+                      items: {
+                        $ref: "#/components/schemas/Category",
+                      },
+                    },
+                    pagination: {
+                      type: "object",
+                      properties: {
+                        total: { type: "integer" },
+                        page: { type: "integer" },
+                        limit: { type: "integer" },
+                        pages: { type: "integer" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
   components: {
     schemas: {
@@ -445,6 +559,18 @@ export const productSpec = {
           soldOut: { type: "boolean" },
           likesCount: { type: "integer" },
           isActive: { type: "boolean" },
+          archived: { type: "boolean" },
+          createdAt: { type: "string", format: "date-time" },
+          updatedAt: { type: "string", format: "date-time" },
+        },
+      },
+      Category: {
+        type: "object",
+        properties: {
+          _id: { type: "string" },
+          name: { type: "string" },
+          slug: { type: "string" },
+          description: { type: "string" },
           archived: { type: "boolean" },
           createdAt: { type: "string", format: "date-time" },
           updatedAt: { type: "string", format: "date-time" },

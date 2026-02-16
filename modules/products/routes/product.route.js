@@ -8,6 +8,8 @@ import {
   isLiked,
   rateProduct,
   getProductRatings,
+  getProductsByCategory,
+  getAllCategoriesController
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -25,5 +27,11 @@ router.get("/products/:id/is-liked", isLiked);
 // Public routes - Ratings
 router.post("/products/:id/rate", rateProduct);
 router.get("/products/:id/ratings", getProductRatings);
-
+// Products by category
+router.get(
+  "/products/category/:categoryId",
+  getProductsByCategory
+);
+// Public: get all categories
+router.get("/categories", getAllCategoriesController);
 export default router;

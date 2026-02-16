@@ -4,14 +4,14 @@ export default {
     { name: "Transactions", description: "Payment transactions (admin)" },
   ],
   paths: {
-    "/api/admin/transactions": {
+    "/api/auth/admin/transactions": {
       get: {
         tags: ["Transactions"],
         summary: "Get all transactions (superadmin)",
         responses: { "200": { description: "Transactions list" }, "403": { description: "Forbidden" } },
       },
     },
-    "/api/admin/transactions/status/{status}": {
+    "/api/auth/admin/transactions/status/{status}": {
       get: {
         tags: ["Transactions"],
         summary: "Get transactions by status (superadmin)",
@@ -21,7 +21,7 @@ export default {
         responses: { "200": { description: "Transactions list" }, "403": { description: "Forbidden" } },
       },
     },
-    "/api/admin/transactions/{transactionId}": {
+    "/api/auth/admin/transactions/{transactionId}": {
       get: {
         tags: ["Transactions"],
         summary: "Fetch a single transaction by id (superadmin)",
@@ -31,7 +31,7 @@ export default {
         responses: { "200": { description: "Transaction" }, "404": { description: "Not found" } },
       },
     },
-    "/api/admin/transactions/{transactionId}/status": {
+    "/api/auth/admin/transactions/{transactionId}/status": {
       patch: {
         tags: ["Transactions"],
         summary: "Update transaction status (superadmin)",

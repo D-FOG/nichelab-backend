@@ -207,3 +207,32 @@ export const getProductRatings = async (req, res) => {
     return res.status(404).json({ error: err.message });
   }
 };
+
+// Public: Get products by category
+export const getProductsByCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+
+    const result = await productService.getProductsByCategory(categoryId, {
+      page,
+      limit,
+    });
+
+    return res.json(result);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const getAllCategoriesController = async (req, res, next) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+
+    const result = await productService.getAllCategories({ page, limit });
+
+    return res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};
