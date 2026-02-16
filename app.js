@@ -43,22 +43,39 @@ app.use(cors(corsOptions));
 // `app.options()` caused path-to-regexp parsing errors and was removed.
 app.use(helmet());
 app.use(morgan("dev"));
+
+// Mount webhook with raw parser specifically
+app.post(
+  "/api/payments/paystack/webhook",
+  express.raw({ type: "application/json" }),
+  async (req, res, next) => {
+    try {
+      const mod = await import(
+        "./modules/paystackIntegrations/controllers/paystack.controller.js"
+      );
+      return mod.paystackWebhook(req, res, next);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 app.use(express.json());
 app.use(rateLimiter);
 
 
 // Mount webhook with raw parser specifically
-app.post(
-  "/api/payments/paystack/webhook",
-  express.raw({ type: "*/*" }),
-  (req, res, next) => {
-    // delegate to controller
-    // require the controller here to avoid circular issues
-    import("./modules/paystackIntegrations/controllers/paystack.controller.js").then(mod => {
-      return mod.paystackWebhook(req, res, next);
-    }).catch(next);
-  }
-);
+// app.post(
+//   "/api/payments/paystack/webhook",
+//   express.raw({ type: "*/*" }),
+//   (req, res, next) => {
+//     // delegate to controller
+//     // require the controller here to avoid circular issues
+//     import("./modules/paystackIntegrations/controllers/paystack.controller.js").then(mod => {
+//       return mod.paystackWebhook(req, res, next);
+//     }).catch(next);
+//   }
+// );
 
 // Mount Admin docs before admin routes so auth middleware doesn't block them
 try {
