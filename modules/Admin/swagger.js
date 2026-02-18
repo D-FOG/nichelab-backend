@@ -380,6 +380,125 @@ export default {
         responses: { "200": { description: "Dashboard statistics" } },
       },
     },
+    "/api/auth/admin/stats/categories/top": {
+      get: {
+        tags: ["Admin Stats"],
+        summary: "Get top 3 categories by sales per day (superadmin)",
+        description:
+          "Returns the top 3 categories per day based on successful order sales amount.",
+        responses: {
+          "200": {
+            description: "Top categories by daily sales",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    data: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          date: { type: "string", example: "2024-01-15" },
+                          categories: {
+                            type: "array",
+                            items: {
+                              type: "object",
+                              properties: {
+                                categoryId: { type: "string" },
+                                name: { type: "string" },
+                                totalSales: { type: "number" },
+                                totalOrders: { type: "number" },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "401": { description: "Unauthorized" },
+          "403": { description: "Forbidden" },
+        },
+      },
+    },
+
+    "/api/auth/admin/stats/products/top": {
+      get: {
+        tags: ["Admin Stats"],
+        summary: "Get top 5 products by sales/orders (superadmin)",
+        description:
+          "Returns the top 5 products ranked by number of successful orders.",
+        responses: {
+          "200": {
+            description: "Top selling products",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    data: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          productId: { type: "string" },
+                          name: { type: "string" },
+                          price: { type: "number" },
+                          totalOrders: { type: "number" },
+                          totalQuantitySold: { type: "number" },
+                          inStock: { type: "boolean" },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "401": { description: "Unauthorized" },
+          "403": { description: "Forbidden" },
+        },
+      },
+    },
+
+    "/api/auth/admin/stats/overview": {
+      get: {
+        tags: ["Admin Stats"],
+        summary: "Get total orders and total revenue (superadmin)",
+        description:
+          "Returns overall statistics including total successful orders and total revenue.",
+        responses: {
+          "200": {
+            description: "Overall admin statistics",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    data: {
+                      type: "object",
+                      properties: {
+                        totalOrders: { type: "number" },
+                        totalRevenue: { type: "number" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "401": { description: "Unauthorized" },
+          "403": { description: "Forbidden" },
+        },
+      },
+    },
   },
   components: {
     schemas: {
