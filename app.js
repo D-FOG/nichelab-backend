@@ -26,6 +26,7 @@ import { cartSpec, couponGiftWrapSpec } from "./modules/carts/swagger.js";
 import ordersSpec from "./modules/orders/swagger.js";
 import paystackSpec from "./modules/paystackIntegrations/swagger.js";
 import transactionsSpec from "./modules/Admin/swagger.transactions.js";
+import adminStats from "./modules/Admin/routes/admin.stats.routes.js"
 
 const app = express();
 
@@ -103,6 +104,7 @@ app.use("/api/auth", admincategoryRoutes);
 app.use("/api/auth", adminProductRoutes);
 app.use("/api/auth", adminOrderRoutes);
 app.use("/api/auth", adminTransactionRoutes);
+app.use("/api/auth", adminStats);
 
 // Error Handler
 //app.use(errorHandler);
