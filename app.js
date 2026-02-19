@@ -26,7 +26,13 @@ import { cartSpec, couponGiftWrapSpec } from "./modules/carts/swagger.js";
 import ordersSpec from "./modules/orders/swagger.js";
 import paystackSpec from "./modules/paystackIntegrations/swagger.js";
 import transactionsSpec from "./modules/Admin/swagger.transactions.js";
+import nichelabSpec from "./modules/nichelab/swagger.js";
+import contactSpec from "./modules/contact/swagger.js";
 import adminStats from "./modules/Admin/routes/admin.stats.routes.js"
+import nichelabRoute from "./modules/nichelab/routes/nichelab.route.js"
+import nichelabAdminRoute from "./modules/nichelab/routes/nichelabAdmin.route.js"
+import contactRoute from "./modules/contact/routes/contact.route.js"
+import contactAdminRoute from './modules/contact/routes/contactAdmin.route.js'
 
 const app = express();
 
@@ -87,7 +93,9 @@ try {
     couponGiftWrapSpec,
     ordersSpec,
     transactionsSpec,
-    paystackSpec
+    paystackSpec,
+    nichelabSpec,
+    contactSpec
   );
   app.use("/api/admin/docs", swaggerUi.serve, swaggerUi.setup(spec));
 } catch (err) {
@@ -105,6 +113,11 @@ app.use("/api/auth", adminProductRoutes);
 app.use("/api/auth", adminOrderRoutes);
 app.use("/api/auth", adminTransactionRoutes);
 app.use("/api/auth", adminStats);
+app.use("/api", nichelabRoute);
+app.use("/api/auth", nichelabAdminRoute);
+app.use("/api", contactRoute);
+app.use("/api/auth", contactAdminRoute);
+
 
 // Error Handler
 //app.use(errorHandler);

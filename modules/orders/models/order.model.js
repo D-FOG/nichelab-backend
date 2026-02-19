@@ -10,7 +10,13 @@ const orderSchema = new mongoose.Schema(
     },
     orderItems: [
       {
-        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        product: { type: mongoose.Schema.Types.ObjectId, required: true },
+        productType: {
+          type: String,
+          enum: ["normal", "niche"],
+          default: "normal",
+          required: true,
+        },
         name: { type: String },
         bottleSize: { type: String },
         quantity: { type: Number, required: true, min: 1 },
