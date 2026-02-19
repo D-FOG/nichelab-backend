@@ -26,4 +26,9 @@ router.get(
   getAllContactMessagesController
 );
 
+router.delete(
+  "/admin/contact/messages/:id",
+  superAdminOnly,
+  deleteContactMessageController
+);
 export default router;

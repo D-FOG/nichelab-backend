@@ -30,7 +30,7 @@ export const contactSpec = {
       },
     },
 
-    "/api/auth/contact/messages": {
+    "/api/auth/admin/contact/messages": {
       get: {
         tags: ["Contact - Admin"],
         summary: "Get all contact messages (admin)",
@@ -39,7 +39,7 @@ export const contactSpec = {
       },
     },
 
-    "/api/auth/contact/messages/{id}": {
+    "/api/auth/admin/contact/messages/{id}": {
       get: {
         tags: ["Contact - Admin"],
         summary: "Get a specific contact message (admin)",
