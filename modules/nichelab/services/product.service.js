@@ -53,9 +53,30 @@ export const deleteNicheProduct = async (id) => {
 };
 
 export const getAllNicheProducts = async (query = {}) => {
-  return await NicheProduct.find({ archived: false, ...query })
-    .populate("category", "name")
-    .sort({ createdAt: -1 });
+  const { category, page = 1, limit = 10, search, ...filters } = query;
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const filter = { archived: false, ...filters };
+  if (search) filter.name = { $regex: search, $options: "i" };
+
+  const [products, total] = await Promise.all([
+    NicheProduct.find(filter)
+      .populate("category", "name")
+      .skip(skip)
+      .limit(Number(limit))
+      .sort({ createdAt: -1 }),
+    NicheProduct.countDocuments(filter),
+  ]);
+
+  return {
+    data: products,
+    pagination: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      pages: Math.ceil(total / Number(limit) || 1),
+    },
+  };
 };
 
 export const getNicheProductById = async (id) => {

@@ -18,9 +18,31 @@ export const nichelabSpec = {
         parameters: [
           { name: "page", in: "query", schema: { type: "integer" } },
           { name: "limit", in: "query", schema: { type: "integer" } },
-          { name: "category", in: "query", schema: { type: "string" } },
         ],
-        responses: { "200": { description: "Products list" } },
+        responses: {
+          "200": {
+            description: "Products list",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    data: { type: "array", items: { $ref: "#/components/schemas/NicheProduct" } },
+                    pagination: {
+                      type: "object",
+                      properties: {
+                        total: { type: "integer" },
+                        page: { type: "integer" },
+                        limit: { type: "integer" },
+                        pages: { type: "integer" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
     "/api/niche/products/{id}": {
