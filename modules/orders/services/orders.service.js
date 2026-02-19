@@ -144,13 +144,19 @@ export async function createCheckout({
   });
 
   if (!init || !init.data) {
-    await Transaction.create({
-      orderId: order._id,
-      reference,
-      amount: pricing.total,
-      status: "failed",
-      rawResponse: init,
-    });
+    // create or update transaction safely (avoid duplicate key on reference)
+    await Transaction.findOneAndUpdate(
+      { reference },
+      {
+        orderId: order._id,
+        reference,
+        transactionId: reference,
+        amount: pricing.total,
+        status: "failed",
+        rawResponse: init,
+      },
+      { upsert: true, new: true }
+    );
     throw Object.assign(new Error("Failed to initialize payment"), {
       statusCode: 500,
     });
@@ -160,14 +166,20 @@ export async function createCheckout({
   order.payment.reference = init.data.reference || reference;
   await order.save();
 
-  await Transaction.create({
-    orderId: order._id,
-    reference: order.payment.reference,
-    amount: pricing.total,
-    currency: "NGN",
-    status: "pending",
-    rawResponse: init,
-  });
+  // create or update transaction safely to prevent duplicate-key errors on retries
+  await Transaction.findOneAndUpdate(
+    { reference: order.payment.reference },
+    {
+      orderId: order._id,
+      reference: order.payment.reference,
+      transactionId: order.payment.reference,
+      amount: pricing.total,
+      currency: "NGN",
+      status: "pending",
+      rawResponse: init,
+    },
+    { upsert: true, new: true }
+  );
 
   return {
     authorization_url: init.data.authorization_url,
