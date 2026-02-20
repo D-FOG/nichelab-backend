@@ -38,9 +38,11 @@ export const paystackWebhook = async (req, res, next) => {
     // Idempotency: find transaction
     let txn = await Transaction.findOne({ reference });
     if (!txn) {
+      // ensure transactionId is set when creating
       txn = await Transaction.create({
         orderId,
         reference,
+        transactionId: reference,
         amount: verifyResp.data.amount / 100,
         currency: verifyResp.data.currency,
         status: status === "success" ? "success" : (status === "failed" ? "failed" : "pending"),

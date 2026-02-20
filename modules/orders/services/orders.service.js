@@ -33,15 +33,36 @@ export async function createCheckout({
       await cartService.validateCartTotal(cartId, expectedTotal);
     }
 
-    orderItems = cart.items.map(i => ({
-      product: i.productId?._id || i.productId,
-      productType: i.productType || "normal",   // 👈 add this if cart supports niche later
-      name: i.productName || i.productId?.name,
-      bottleSize: i.bottleSize,
-      quantity: i.quantity,
-      unitPrice: i.price,
-      subtotal: i.price * i.quantity,
-    }));
+    // Robustly resolve product id whether populated or stored as ObjectId/string
+    const resolveProductId = (p) => {
+      if (!p) return null;
+      // If populated document
+      if (typeof p === "object") {
+        if (p._id) return p._id;
+        if (p.id) return p.id;
+      }
+      // primitive id (ObjectId or string)
+      return p;
+    };
+
+    orderItems = cart.items.map(i => {
+      const prod = resolveProductId(i.productId);
+      return {
+        product: prod,
+        productType: i.productType || "normal",
+        name: i.productName || (i.productId && i.productId.name) || null,
+        bottleSize: i.bottleSize,
+        quantity: i.quantity,
+        unitPrice: i.price,
+        subtotal: i.price * i.quantity,
+      };
+    });
+
+    // Ensure all items resolved to a product id
+    const missingProducts = orderItems.filter(it => !it.product);
+    if (missingProducts.length > 0) {
+      throw Object.assign(new Error("Order creation failed: some cart items have no linked product id."), { statusCode: 400 });
+    }
 
     pricing = {
       subtotal: cart.pricing.subtotal || cart.subtotal || 0,

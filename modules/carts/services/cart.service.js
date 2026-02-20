@@ -1,5 +1,6 @@
 import Cart from "../models/carts.model.js";
 import Product from "../../products/models/products.model.js";
+import NicheProduct from "../../nichelab/model/product.model.js";
 import Coupon from "../models/coupon.model.js";
 import GiftWrap from "../models/giftWrap.model.js";
 
@@ -13,6 +14,25 @@ export const getOrCreateCart = async (cartId) => {
     cart = await Cart.create({ cartId, items: [], pricing: {} });
   }
 
+  // Ensure items.productId is populated from either Product or NicheProduct
+  await Promise.all(
+    cart.items.map(async (item) => {
+      // If already populated (object), skip
+      if (item.productId && typeof item.productId === "object") return;
+
+      const prod = await Product.findById(item.productId);
+      if (prod) {
+        item.productId = prod;
+        return;
+      }
+
+      const niche = await NicheProduct.findById(item.productId);
+      if (niche) {
+        item.productId = niche;
+      }
+    })
+  );
+
   cart.calculateTotal();
   return cart;
 };
@@ -25,7 +45,11 @@ export const addToCart = async (cartId, productId, quantity, bottleSize) => {
     throw new Error("Quantity must be at least 1");
   }
 
-  const product = await Product.findById(productId);
+  // Try to find product in main products collection, otherwise fall back to niche lab products
+  let product = await Product.findById(productId);
+  if (!product) {
+    product = await NicheProduct.findById(productId);
+  }
   if (!product) {
     throw new Error("Product not found");
   }
@@ -87,8 +111,14 @@ export const updateQuantity = async (cartId, itemId, quantity) => {
     throw new Error("Item not found in cart");
   }
 
-  // Verify stock availability
-  const product = await Product.findById(item.productId);
+  // Verify stock availability: check both product collections
+  let product = await Product.findById(item.productId);
+  if (!product) {
+    product = await NicheProduct.findById(item.productId);
+  }
+  if (!product) {
+    throw new Error("Product not found");
+  }
   if (product.stock < quantity) {
     throw new Error(`Only ${product.stock} items available`);
   }
@@ -296,13 +326,29 @@ export const validateCartTotal = async (cartId, expectedTotal) => {
  * Get cart with full details
  */
 export const getCart = async (cartId) => {
-  const cart = await Cart.findOne({ cartId })
-    .populate("items.productId")
-    .populate("giftWrap.id");
+  const cart = await Cart.findOne({ cartId }).populate("giftWrap.id");
 
   if (!cart) {
     throw new Error("Cart not found");
   }
+
+  // Manually populate items.productId from Product or NicheProduct
+  await Promise.all(
+    cart.items.map(async (item) => {
+      if (item.productId && typeof item.productId === "object") return;
+
+      const prod = await Product.findById(item.productId);
+      if (prod) {
+        item.productId = prod;
+        return;
+      }
+
+      const niche = await NicheProduct.findById(item.productId);
+      if (niche) {
+        item.productId = niche;
+      }
+    })
+  );
 
   cart.calculateTotal();
   return cart;
