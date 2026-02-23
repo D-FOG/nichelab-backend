@@ -123,7 +123,12 @@ export const disableAdminAccount = async (req, res, next) => {
 
 export const changeAdminPassword = async (req, res, next) => {
   try {
-    const admin = await updateAdminPassword(req.admin._id, req.body);
+    const currentPassword = req.body.currentPassword;
+    const newPassword = req.body.newPassword;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json(new ApiResponse(400, "Current and new passwords are required"));
+    };
+    const admin = await updateAdminPassword(req.admin._id, currentPassword, newPassword);
 
     res.json(new ApiResponse(200, "Password changed successfully", admin));
   } catch (err) {
