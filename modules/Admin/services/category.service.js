@@ -1,4 +1,5 @@
 import Category from "../../products/models/category.model.js";
+//import Product from "../../products/modelss/product.model.js";
 import { ApiError } from "../../../utils/ApiError.js";
 //import { ApiResponse } from "../../utils/ApiResponse.js";
 
@@ -60,10 +61,46 @@ export const deleteCategory = async (categoryId) => {
 
 export const getAllCategories = async () => {
   try {
-    const categories = await Category.find().sort({ createdAt: -1 });
+    const categories = await Category.aggregate([
+      {
+        $lookup: {
+          from: "products", // collection name in MongoDB (usually lowercase plural)
+          localField: "_id",
+          foreignField: "category",
+          as: "products",
+        },
+      },
+      {
+        $addFields: {
+          productCount: {
+            $size: {
+              $filter: {
+                input: "$products",
+                as: "product",
+                cond: {
+                  $and: [
+                    { $eq: ["$$product.isActive", true] },
+                    { $eq: ["$$product.archived", false] },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          products: 0, // remove products array from response
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+    ]);
+
     return categories;
   } catch (err) {
-    throw err
+    throw err;
   }
 };
 
