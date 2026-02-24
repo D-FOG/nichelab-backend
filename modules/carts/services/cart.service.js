@@ -47,8 +47,11 @@ export const addToCart = async (cartId, productId, quantity, bottleSize) => {
 
   // Try to find product in main products collection, otherwise fall back to niche lab products
   let product = await Product.findById(productId);
+  let productType = "normal";
+
   if (!product) {
     product = await NicheProduct.findById(productId);
+    productType = "niche";
   }
   if (!product) {
     throw new Error("Product not found");
@@ -79,6 +82,7 @@ export const addToCart = async (cartId, productId, quantity, bottleSize) => {
   } else {
     cart.items.push({
       productId,
+      productType,
       quantity,
       bottleSize,
       price: product.price,
