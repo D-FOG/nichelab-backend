@@ -1,12 +1,12 @@
 import {
-  getTopCategoriesBySalesPerDayService,
+  getTopCategoriesBySalesService,
   getTopProductsBySalesService,
   getAdminTotalsService,
 } from "../services/admin.stats.service.js";
 
-export const getTopCategoriesBySalesPerDayController = async (req, res, next) => {
+export const getTopCategoriesBySalesController = async (req, res, next) => {
   try {
-    const data = await getTopCategoriesBySalesPerDayService();
+    const data = await getTopCategoriesBySalesService();
     res.status(200).json({
       success: true,
       data,

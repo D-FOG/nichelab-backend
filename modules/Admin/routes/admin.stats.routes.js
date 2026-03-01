@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  getTopCategoriesBySalesPerDayController,
+  getTopCategoriesBySalesController,
   getTopProductsBySalesController,
   getAdminTotalsController,
 } from "../controllers/admin.stats.controller.js";
@@ -11,7 +11,7 @@ const router = Router();
 router.get(
   "/admin/stats/categories/top",
   superAdminOnly,
-  getTopCategoriesBySalesPerDayController
+  getTopCategoriesBySalesController
 );
 
 router.get(
