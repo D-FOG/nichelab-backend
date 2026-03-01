@@ -13,6 +13,7 @@ import {
   deleteNicheProductController,
   getAllNicheProductsController,
   getNicheProductByIdController,
+  restoreNicheProductController,
 } from "../controllers/product.controller.js";
 
 const router = Router();
@@ -45,5 +46,6 @@ router.put(
 router.delete("/admin/niche/products/:id", superAdminOnly, deleteNicheProductController);
 router.get("/admin/niche/products", superAdminOnly, getAllNicheProductsController);
 router.get("/admin/niche/products/:id", superAdminOnly, getNicheProductByIdController);
+router.patch("/admin/niche/products/:id/restore", superAdminOnly, restoreNicheProductController);
 
 export default router;

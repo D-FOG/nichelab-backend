@@ -193,3 +193,22 @@ export const getProductsByCategory = async (categoryId) => {
   }
 };
 
+export const restoreProduct = async (productId) => {
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    throw new ApiError(404, "Product not found");
+  }
+
+  if (!product.archived) {
+    throw new ApiError(400, "Product is not archived");
+  }
+
+  product.archived = false;
+  product.isActive = true;
+
+  await product.save();
+
+  return product;
+};
+

@@ -1,4 +1,4 @@
-import { createProduct, updateProduct, deleteProduct, getAllProducts, getProductById, getProductsByCategory} from "../services/product.service.js";
+import { createProduct, updateProduct, deleteProduct, getAllProducts, getProductById, getProductsByCategory, restoreProduct} from "../services/product.service.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 export const createProductController = async (req, res, next) => {
@@ -60,6 +60,16 @@ export const getProductsByCategoryController = async (req, res, next) => {
         const { categoryId } = req.params;
         const products = await getProductsByCategory(categoryId);
         return res.status(200).json(new ApiResponse(200, "Products fetched successfully", products));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const restoreProductController = async (req, res, next) => {
+    try {
+        const { productId } = req.params;
+        const product = await restoreProduct(productId);
+        return res.status(200).json(new ApiResponse(200, "Product restored successfully", product));
     } catch (err) {
         next(err);
     }

@@ -5,6 +5,7 @@ import {
   getAllNicheProducts,
   getNicheProductById,
   getNicheProductsByCategory,
+  restoreNicheProduct,
 } from "../services/product.service.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 
@@ -64,4 +65,14 @@ export const getNicheProductsByCategoryController = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+export const restoreNicheProductController = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const product = await restoreNicheProduct(id);
+    res.json(new ApiResponse(200, "Product restored", product));
+  } catch (err) {
+    next(err);
+  } 
 };

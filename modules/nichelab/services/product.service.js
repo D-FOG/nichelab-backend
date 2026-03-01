@@ -53,11 +53,35 @@ export const deleteNicheProduct = async (id) => {
 };
 
 export const getAllNicheProducts = async (query = {}) => {
-  const { category, page = 1, limit = 10, search, ...filters } = query;
+  const {
+    category,
+    page = 1,
+    limit = 10,
+    search,
+    archived,
+    ...filters
+  } = query;
+
   const skip = (Number(page) - 1) * Number(limit);
 
-  const filter = { archived: false, ...filters };
-  if (search) filter.name = { $regex: search, $options: "i" };
+  const filter = { ...filters };
+
+  // Handle archived filter properly
+  if (archived !== undefined) {
+    filter.archived = archived === "true";
+  } else {
+    filter.archived = false; // default
+  }
+
+  // Category filter
+  if (category) {
+    filter.category = category;
+  }
+
+  // Search filter
+  if (search) {
+    filter.name = { $regex: search, $options: "i" };
+  }
 
   const [products, total] = await Promise.all([
     NicheProduct.find(filter)
@@ -93,4 +117,23 @@ export const getNicheProductsByCategory = async (categoryId) => {
     category: categoryId,
     archived: false,
   }).populate("category", "name");
+};
+
+export const restoreNicheProduct = async (id) => {
+  const product = await NicheProduct.findById(id);
+
+  if (!product) {
+    throw new ApiError(404, "Product not found");
+  }
+
+  if (!product.archived) {
+    throw new ApiError(400, "Product is not archived");
+  }
+
+  product.archived = false;
+  product.isActive = true;
+
+  await product.save();
+
+  return product;
 };

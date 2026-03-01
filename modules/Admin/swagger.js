@@ -499,6 +499,42 @@ export default {
         },
       },
     },
+    "/api/auth/admin/products/{productId}/restore": {
+      patch: {
+        tags: ["Admin"],
+        summary: "Restore archived product (superadmin)",
+        description: "Restores a soft-deleted product by setting archived to false and isActive to true.",
+        parameters: [
+          {
+            name: "productId",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Product restored successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    message: { type: "string" },
+                    data: { $ref: "#/components/schemas/Product" },
+                  },
+                },
+              },
+            },
+          },
+          "400": { description: "Product is not archived" },
+          "404": { description: "Product not found" },
+          "401": { description: "Unauthorized" },
+          "403": { description: "Forbidden" },
+        },
+      },
+    },
   },
   components: {
     schemas: {

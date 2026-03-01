@@ -149,6 +149,29 @@ export const nichelabSpec = {
         tags: ["Nichelab - Admin"],
         summary: "Get all niche products (admin)",
         security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "archived",
+            in: "query",
+            schema: { type: "boolean" },
+            description: "Set to true to fetch archived products. Defaults to false.",
+          },
+          {
+            name: "page",
+            in: "query",
+            schema: { type: "integer" },
+          },
+          {
+            name: "limit",
+            in: "query",
+            schema: { type: "integer" },
+          },
+          {
+            name: "search",
+            in: "query",
+            schema: { type: "string" },
+          },
+        ],
         responses: { "200": { description: "Products list" } },
       },
     },
@@ -193,6 +216,43 @@ export const nichelabSpec = {
         security: [{ bearerAuth: [] }],
         parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
         responses: { "200": { description: "Product deleted" }, "404": { description: "Not found" } },
+      },
+    },
+    "/api/auth/admin/niche/products/{id}/restore": {
+      patch: {
+        tags: ["Nichelab - Admin"],
+        summary: "Restore archived niche product (admin)",
+        description:
+          "Restores a soft-deleted niche product by setting archived to false and isActive to true.",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Niche product restored successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    message: { type: "string" },
+                    data: { $ref: "#/components/schemas/NicheProduct" },
+                  },
+                },
+              },
+            },
+          },
+          "404": { description: "Archived niche product not found" },
+          "401": { description: "Unauthorized" },
+          "403": { description: "Forbidden" },
+        },
       },
     },
   },

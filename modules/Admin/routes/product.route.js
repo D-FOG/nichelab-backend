@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createProductController, updateProductController, deleteProductController, getAllProductsController, getProductByIdController, getProductsByCategoryController } from "../controllers/product.controller.js";
+import { createProductController, updateProductController, deleteProductController, getAllProductsController, getProductByIdController, getProductsByCategoryController, restoreProductController } from "../controllers/product.controller.js";
 import { superAdminOnly } from "../../../middlewares/superAdminAuth.js";
 import multer from "multer";
 
@@ -13,5 +13,6 @@ router.delete("/admin/products/:productId", superAdminOnly, deleteProductControl
 router.get("/admin/products", superAdminOnly, getAllProductsController);
 router.get("/admin/products/:productId", superAdminOnly, getProductByIdController);
 router.get("/admin/categories/:categoryId/products", superAdminOnly, getProductsByCategoryController);
+router.patch("/admin/products/:productId/restore", superAdminOnly, restoreProductController);
 
 export default router;
