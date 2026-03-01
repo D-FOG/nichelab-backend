@@ -214,6 +214,32 @@ export default {
       get: {
         tags: ["Admin"],
         summary: "Get all products (superadmin)",
+        parameters: [
+          {
+            name: "search",
+            in: "query",
+            schema: { type: "string" },
+            description: "Search by product name",
+          },
+          {
+            name: "categoryId",
+            in: "query",
+            schema: { type: "string" },
+            description: "Filter by category ID",
+          },
+          {
+            name: "tag",
+            in: "query",
+            schema: { type: "string" },
+            description: "Filter by tag (unisex, masculine, feminine)",
+          },
+          {
+            name: "archived",
+            in: "query",
+            schema: { type: "boolean" },
+            description: "Filter archived products (true or false)",
+          },
+        ],
         responses: { "200": { description: "Products list" } },
       },
     },
